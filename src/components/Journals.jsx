@@ -1,315 +1,210 @@
-// import React, { useEffect, useState } from 'react';
-
-// const Journals = () => {
-
-//     const [getjournal, setgetjournal] = useState([])
-//     const [loading, setloading] = useState(true)
-
-//     useEffect(()=>{
-//         fetch('http://localhost:5000/journals')
-//         .then((res)=>res.json())
-//         .then((data=>{
-//             setgetjournal(data)
-//             setloading(false)
-//         }))
-//     })
-
-//     return (
-//         <div>
-//              <div className="max-w-3xl mx-auto p-4">
-//       <h1 className="text-2xl font-bold mb-4">📓 My Journals</h1>
-//       {loading ? (
-//         <p>Loading...</p>
-//       ) : getjournal.length === 0 ? (
-//         <p>No journal entries found.</p>
-//       ) : (
-//         getjournal.map((journal) => (
-//           <div
-//             key={journal._id}
-//             className="border rounded-md shadow-md p-4 mb-4 bg-white"
-//           >
-//             <h2 className="text-xl font-semibold">{journal.title}</h2>
-//             <p className="text-gray-700 mt-2">{journal.content}</p>
-//             <p className="text-sm text-gray-500 mt-2">
-//               {new Date(journal.createdAt).toLocaleString()}
-//             </p>
-//           </div>
-//         ))
-//       )}
-//     </div>
-//         </div>
-//     );
-// };
-
-// export default Journals;
-
-// gork
-
-// import React, { useEffect, useState } from 'react';
-
-// const Journals = () => {
-//   const [getjournal, setgetjournal] = useState([]);
-//   const [loading, setloading] = useState(true);
-
-//   useEffect(() => {
-//     fetch('http://localhost:5000/journals')
-//       .then((res) => res.json())
-//       .then((data) => {
-//         setgetjournal(data);
-//         setloading(false);
-//       })
-//       .catch((error) => {
-//         console.error('Error fetching journals:', error);
-//         setloading(false);
-//       });
-//   }, []);
-
-//   return (
-//     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-//       <div className="max-w-4xl mx-auto p-6">
-//         <h1 className="text-3xl font-extrabold text-gray-900 mb-8 flex items-center gap-2">
-//           <span>📓</span> My Journals
-//         </h1>
-//         {loading ? (
-//           <div className="flex justify-center items-center h-64">
-//             <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-//           </div>
-//         ) : getjournal.length === 0 ? (
-//           <div className="text-center py-12">
-//             <p className="text-lg text-gray-600">No journal entries found.</p>
-//             <p className="text-sm text-gray-500 mt-2">Start writing your thoughts today!</p>
-//           </div>
-//         ) : (
-//           <div className="grid gap-6">
-//             {getjournal.map((journal) => (
-//               <div
-//                 key={journal._id}
-//                 className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 border border-gray-100"
-//               >
-//                 <h2 className="text-xl font-semibold text-gray-900 mb-3">{journal.title}</h2>
-//                 <p className="text-gray-600 leading-relaxed mb-4">{journal.content}</p>
-//                 <p className="text-sm text-gray-400">
-//                   {new Date(journal.createdAt).toLocaleString('en-US', {
-//                     year: 'numeric',
-//                     month: 'long',
-//                     day: 'numeric',
-//                     hour: '2-digit',
-//                     minute: '2-digit',
-//                   })}
-//                 </p>
-//               </div>
-//             ))}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Journals;
-
-// gemini ai
-
-// import React, { useEffect, useState } from 'react';
-
-// const Journals = () => {
-//     const [journals, setJournals] = useState([]);
-//     const [loading, setLoading] = useState(true);
-//     const [error, setError] = useState(null); // Added for error handling
-
-//     useEffect(() => {
-//         const fetchJournals = async () => {
-//             try {
-//                 const res = await fetch('http://localhost:5000/journals');
-//                 if (!res.ok) {
-//                     throw new Error(`HTTP error! status: ${res.status}`);
-//                 }
-//                 const data = await res.json();
-//                 setJournals(data);
-//             } catch (err) {
-//                 console.error("Failed to fetch journals:", err);
-//                 setError("Failed to load journals. Please try again later.");
-//             } finally {
-//                 setLoading(false);
-//             }
-//         };
-
-//         fetchJournals();
-//     }, []); // Empty dependency array to run only once on mount
-
-//     return (
-//         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 font-sans">
-//             <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl p-8 space-y-6">
-//                 <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center flex items-center justify-center gap-3">
-//                     <span className="text-indigo-600">📓</span> My Digital Journal
-//                 </h1>
-
-//                 {loading ? (
-//                     <div className="flex justify-center items-center py-10">
-//                         <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-indigo-500"></div>
-//                         <p className="ml-4 text-lg text-gray-600">Loading your thoughts...</p>
-//                     </div>
-//                 ) : error ? (
-//                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative text-center" role="alert">
-//                         <span className="block sm:inline">{error}</span>
-//                     </div>
-//                 ) : journals.length === 0 ? (
-//                     <div className="text-center py-10 text-gray-600 text-lg">
-//                         <p>It looks a little quiet in here.</p>
-//                         <p>No journal entries found. Time to write something inspiring!</p>
-//                     </div>
-//                 ) : (
-//                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                         {journals.map((journal) => (
-//                             <div
-//                                 key={journal._id}
-//                                 className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col justify-between transform hover:-translate-y-1"
-//                             >
-//                                 <div>
-//                                     <h2 className="text-2xl font-bold text-gray-800 mb-3 leading-tight">
-//                                         {journal.title}
-//                                     </h2>
-//                                     <p className="text-gray-700 text-base line-clamp-4 mb-4">
-//                                         {journal.content}
-//                                     </p>
-//                                 </div>
-//                                 <p className="text-sm text-gray-500 font-medium mt-auto pt-3 border-t border-gray-100">
-//                                     <span className="mr-2">🗓️</span>
-//                                     {new Date(journal.createdAt).toLocaleDateString('en-US', {
-//                                         year: 'numeric',
-//                                         month: 'long',
-//                                         day: 'numeric',
-//                                         hour: '2-digit',
-//                                         minute: '2-digit',
-//                                     })}
-//                                 </p>
-//                             </div>
-//                         ))}
-//                     </div>
-//                 )}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Journals;
-
-// deepseek ai
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import { FiTrash2, FiEdit, FiPlus, FiCalendar, FiClock, FiArrowLeft } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router";
 
 const Journals = () => {
   const [journals, setJournals] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchJournals = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/journals");
-        if (!response.ok) {
-          throw new Error("Failed to fetch journals");
-        }
-        const data = await response.json();
+    setIsLoading(true);
+    fetch("http://localhost:5000/journals")
+      .then((res) => res.json())
+      .then((data) => {
         setJournals(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchJournals();
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching journals:", error);
+        setIsLoading(false);
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to load journals.",
+          icon: "error",
+          background: "#1f2937",
+          color: "#f3f4f6",
+          confirmButtonColor: "#3b82f6",
+        });
+      });
   }, []);
 
+  const deleteJournal = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this journal!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3b82f6",
+      cancelButtonColor: "#ef4444",
+      confirmButtonText: "Yes, delete it!",
+      background: "#1f2937",
+      color: "#f3f4f6",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:5000/journals/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.deletedCount > 0) {
+              setJournals((prev) => prev.filter((j) => j._id !== id));
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your journal has been deleted.",
+                icon: "success",
+                background: "#1f2937",
+                color: "#f3f4f6",
+                confirmButtonColor: "#3b82f6",
+              });
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: "Failed to delete the journal.",
+                icon: "error",
+                background: "#1f2937",
+                color: "#f3f4f6",
+                confirmButtonColor: "#3b82f6",
+              });
+            }
+          })
+          .catch(() => {
+            Swal.fire({
+              title: "Error!",
+              text: "Something went wrong.",
+              icon: "error",
+              background: "#1f2937",
+              color: "#f3f4f6",
+              confirmButtonColor: "#3b82f6",
+            });
+          });
+      }
+    });
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const formatTime = (dateString) => {
+    const options = { hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleTimeString(undefined, options);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="flex items-center text-indigo-600 hover:text-indigo-800 transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-1"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+        {/* Header with back button and title */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors duration-200"
             >
-              <path
-                fillRule="evenodd"
-                d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Back to Dashboard
+              <FiArrowLeft className="text-xl" />
+              <span className="hidden sm:inline">Back to Dashboard</span>
+            </button>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white">
+              <span className="bg-gradient-to-r from-blue-400 to-indigo-600 bg-clip-text text-transparent">
+                My Journal Entries
+              </span>
+            </h2>
+          </div>
+          
+          <button 
+            onClick={() => navigate('/')}
+            className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-all duration-300 w-full sm:w-auto justify-center"
+          >
+            <FiPlus className="text-lg" />
+            <span>New Entry</span>
           </button>
         </div>
 
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-indigo-900 mb-2">
-            📖 My Journal Entries
-          </h1>
-          <p className="text-lg text-indigo-700">
-            Reflections and thoughts captured over time
-          </p>
-        </div>
-
-        {loading ? (
+        {/* Content Area */}
+        {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
           </div>
-        ) : error ? (
-          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
-            <p>Error: {error}</p>
-          </div>
         ) : journals.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="mx-auto w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
-              <span className="text-3xl">✏️</span>
-            </div>
-            <h3 className="text-xl font-medium text-gray-700 mb-2">
-              No entries yet
-            </h3>
-            <p className="text-gray-500">
-              Your journal entries will appear here once created
-            </p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gray-800/50 rounded-xl p-8 text-center border border-gray-700"
+          >
+            <div className="text-gray-400 mb-4 text-6xl">📔</div>
+            <h3 className="text-xl font-medium text-gray-300 mb-2">No journal entries yet</h3>
+            <p className="text-gray-500 mb-4">Start by creating your first journal entry</p>
+            <button 
+              onClick={() => navigate('/journals/new')}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition-all duration-300"
+            >
+              Create First Entry
+            </button>
+          </motion.div>
         ) : (
-          <div className="space-y-6">
-            {journals.map((journal) => (
-              <div
-                key={journal._id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-              >
-                <div className="p-6">
-                  <div className="flex justify-between items-start">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                      {journal.title}
-                    </h2>
-                    <span className="text-xs bg-indigo-100 text-indigo-800 py-1 px-2 rounded-full">
-                      {new Date(journal.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </span>
+          <ul className="space-y-4">
+            <AnimatePresence>
+              {journals.map((journal) => (
+                <motion.li
+                  key={journal._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700 hover:border-indigo-500/30 transition-all duration-300"
+                >
+                  <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                    <div className="flex-1">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2 gap-2">
+                        <h3 className="text-lg sm:text-xl font-semibold text-white break-words">
+                          {journal.title}
+                        </h3>
+                        {journal.category && (
+                          <span className="text-xs px-2 py-1 bg-indigo-900/50 text-indigo-300 rounded-full self-start sm:self-center">
+                            {journal.category}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-gray-300 mb-4 whitespace-pre-line break-words">
+                        {journal.content}
+                      </p>
+                      
+                      <div className="flex flex-col xs:flex-row xs:items-center space-y-2 xs:space-y-0 xs:space-x-4 text-sm text-gray-500">
+                        <div className="flex items-center space-x-1">
+                          <FiCalendar className="text-gray-500" />
+                          <span>{formatDate(journal.createdAt)}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <FiClock className="text-gray-500" />
+                          <span>{formatTime(journal.createdAt)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex space-x-2 self-end md:self-auto">
+                      <button 
+                        onClick={() => navigate(`/journals/edit/${journal._id}`)}
+                        className="p-2 text-gray-400 hover:text-indigo-400 hover:bg-gray-700 rounded-lg transition-all"
+                        aria-label="Edit journal"
+                      >
+                        <FiEdit className="text-lg" />
+                      </button>
+                      <button
+                        onClick={() => deleteJournal(journal._id)}
+                        className="p-2 text-gray-400 hover:text-red-400 hover:bg-gray-700 rounded-lg transition-all"
+                        aria-label="Delete journal"
+                      >
+                        <FiTrash2 className="text-lg" />
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-gray-600 mt-4 whitespace-pre-line">
-                    {journal.content}
-                  </p>
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end">
-                    <span className="text-sm text-gray-500">
-                      {new Date(journal.createdAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </motion.li>
+              ))}
+            </AnimatePresence>
+          </ul>
         )}
       </div>
     </div>
