@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Outlet, NavLink } from "react-router";
+import { NavLink, Outlet } from "react-router";
+import { useAuthContext } from "../context/AuthContext"; // *** ADDED: import auth context ***
 
 const Dash = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const { user } = useAuthContext(); // *** ADDED: get current user ***
 
   // Active link styling helper with modern gradients and shadows
   const activeClass =
@@ -19,26 +22,27 @@ const Dash = () => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-all duration-500 ease-out md:translate-x-0 md:static md:inset-auto`}
       >
-        <div className="flex flex-col h-full">
-          {/* Enhanced Profile Section */}
+        <div className="flex flex-col  h-full">
+          {/* User Profile Section */}
           <div className="relative p-8 border-b border-gray-100/50">
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-t-3xl"></div>
-            <div className="relative flex items-center space-x-4">
+            <div className="relative flex flex-col items-center  space-x-4">
               <div className="relative">
                 <img
-                  src="https://i.pravatar.cc/100"
-                  alt="Profile"
-                  className="w-16 h-16 rounded-2xl object-cover shadow-lg ring-4 ring-white/50"
+                  src={user?.photoURL || "https://i.pravatar.cc/100"}
+                  className="w-12 h-12 rounded-full object-cover shadow-lg ring-4 ring-white/50" // <-- changed here
                 />
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 rounded-full border-3 border-white shadow-lg"></div>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-800 tracking-tight">John Doe</h2>
-                <p className="text-sm text-gray-500 font-medium">john.doe@example.com</p>
-                <div className="flex items-center mt-1">
-                  <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                  <span className="text-xs text-green-600 font-semibold">Online</span>
-                </div>
+                <h2 className="text-xl font-bold text-gray-800 tracking-tight">
+                  {user?.displayName || "Guest User"}{" "}
+                  {/* *** CHANGED: dynamic user name *** */}
+                </h2>
+                <p className="text-sm text-gray-500 font-medium">
+                  {user?.email || "Not logged in"}{" "}
+                  {/* *** CHANGED: dynamic user email *** */}
+                </p>
+               
               </div>
             </div>
           </div>
@@ -46,7 +50,9 @@ const Dash = () => {
           {/* Modern Navigation Menu */}
           <nav className="flex-1 px-6 py-6 overflow-y-auto">
             <div className="mb-6">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Navigation</h3>
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                Navigation
+              </h3>
               <ul className="space-y-3">
                 <li>
                   <NavLink
@@ -107,13 +113,25 @@ const Dash = () => {
             <div className="mt-8 p-4 rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100">
               <div className="flex items-center mb-2">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center mr-3">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
                   </svg>
                 </div>
                 <h4 className="font-bold text-gray-800">Quick Actions</h4>
               </div>
-              <p className="text-sm text-gray-600 mb-3">Get started with your dashboard</p>
+              <p className="text-sm text-gray-600 mb-3">
+                Get started with your dashboard
+              </p>
               <button className="w-full px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                 Explore Features
               </button>
@@ -166,8 +184,18 @@ const Dash = () => {
           </h1>
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-5 5v-5zM9 17H4l5 5v-5z" />
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 17h5l-5 5v-5zM9 17H4l5 5v-5z"
+                />
               </svg>
             </div>
           </div>
@@ -176,6 +204,16 @@ const Dash = () => {
         {/* Main content with modern container */}
         <main className="flex-1 p-8 overflow-auto">
           <div className="max-w-7xl mx-auto">
+            {/* *** ADDED: Show Welcome message if no nested route loaded *** */}
+            {!user ? (
+              <p className="text-lg font-semibold text-gray-700">
+                Welcome, Guest!
+              </p>
+            ) : (
+              <p className="text-lg font-semibold text-gray-700">
+                Welcome back, {user.displayName || user.email}!
+              </p>
+            )}
             <Outlet />
           </div>
         </main>

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { useAuthContext } from "../context/AuthContext"; // adjust path as needed
 
 const JournalInput = ({ onSubmit }) => {
+  const { user } = useAuthContext(); // access authenticated user
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -27,10 +29,11 @@ const JournalInput = ({ onSubmit }) => {
       title,
       content,
       createdAt: new Date().toISOString(),
+      email: user?.email, // now from context
     };
 
     try {
-      const res = await fetch("http://localhost:5000/journals", {
+      const res = await fetch("https://my-journal-s.vercel.app/journals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +80,7 @@ const JournalInput = ({ onSubmit }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="max-w-6xl mx-auto p-1 sm:p-6 lg:p-8">
       {/* Header Section */}
       <div className="text-center mb-6 sm:mb-8">
         <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 mb-3 sm:mb-4 shadow-lg">

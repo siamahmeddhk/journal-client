@@ -5,6 +5,7 @@ import Home from "../home/Home";
 
 import Dash from "../deshborad/Dash";
 import Journals from "../components/Journals";
+import Reg from "../components/Reg";
 
 
 export const router = createBrowserRouter([
@@ -16,7 +17,11 @@ export const router = createBrowserRouter([
         index: true, // path = '/'
         element: <Home />,
       },
-      // Other pages that show Nav/Footer from Root
+      {
+        path: "/registration",
+        Component: Reg,
+      }
+     
     ],
   },
   {
