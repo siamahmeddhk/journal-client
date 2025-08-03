@@ -5,6 +5,11 @@ import { useNavigate } from "react-router";
 const Reg = () => {
   const { register, loginWithGoogle } = useAuthContext();
   const navigate = useNavigate();
+  const [photoFile, setPhotoFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    setPhotoFile(e.target.files[0]);
+  };
 
   const [form, setForm] = useState({
     name: "",
@@ -17,7 +22,7 @@ const Reg = () => {
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
@@ -26,12 +31,46 @@ const Reg = () => {
     setLoading(true);
 
     try {
-      await register(form.email, form.password, form.name, form.photo);
+      let photoURL = "";
+
+      if (photoFile) {
+        const formData = new FormData();
+        formData.append("image", photoFile);
+
+        // const imgbbApiKey = "f1e3cf31096936f1f3525fa425729374"; // 🔑 Replace this with your real key
+
+        // const res = await fetch(`https://api.imgbb.com/1/upload?key=f1e3cf31096936f1f3525fa425729374`, {
+        //   method: "POST",
+        //   body: formData,
+        // });
+
+        const res = await fetch(
+          `https://api.imgbb.com/1/upload?key=${
+            import.meta.env.VITE_IMGBB_KEY
+          }`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await res.json();
+
+        if (data.success) {
+          photoURL = data.data.url;
+        } else {
+          throw new Error("Image upload failed");
+        }
+      }
+
+      // Now call your custom register function with image
+      await register(form.email, form.password, form.name, photoURL);
       alert("Registration successful!");
       navigate("/");
     } catch (err) {
       setError(err.message);
     }
+
     setLoading(false);
   };
 
@@ -74,15 +113,13 @@ const Reg = () => {
 
         <div>
           <label className="block font-semibold mb-1" htmlFor="photo">
-            Profile Image URL
+            Profile Image
           </label>
           <input
-            type="url"
+            type="file"
             id="photo"
-            name="photo"
-            value={form.photo}
-            onChange={handleChange}
-            placeholder="https://example.com/photo.jpg"
+            accept="image/*"
+            onChange={handleFileChange}
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
         </div>
