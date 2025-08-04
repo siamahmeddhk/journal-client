@@ -6,6 +6,7 @@ import Dash from "../deshborad/Dash";
 import Journals from "../components/Journals";
 import Reg from "../components/Reg";
 import PrivateRoute from "./PrivateRoute";
+import Login from "../components/Login";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
         path: "/registration",
         Component: Reg,
       },
+      {
+        path: "/login",
+        Component: Login
+      }
     ],
   },
   {

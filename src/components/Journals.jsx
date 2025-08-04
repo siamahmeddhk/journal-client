@@ -4,6 +4,10 @@ import { FiTrash2, FiEdit, FiPlus, FiCalendar, FiClock, FiArrowLeft } from "reac
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router";
 import { useAuthContext } from "../context/AuthContext";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+
+
 
 const Journals = () => {
   const [journals, setJournals] = useState([]);
@@ -12,6 +16,8 @@ const Journals = () => {
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+
   const { user } = useAuthContext();
   const navigate = useNavigate();
   const modalRef = useRef();
@@ -181,6 +187,17 @@ const Journals = () => {
       setIsUpdating(false);
     }
   };
+   
+  const filteredJournals = selectedDate
+  ? journals.filter((j) => {
+      const journalDate = new Date(j.createdAt).toDateString();
+      const selected = new Date(selectedDate).toDateString();
+      return journalDate === selected;
+    })
+  : journals;
+
+
+
 
   // Safely check if journals is an array and has items
   const hasJournals = Array.isArray(journals) && journals.length > 0;
@@ -214,6 +231,28 @@ const Journals = () => {
           </button>
         </div>
 
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+  <div className="flex items-center space-x-3">
+    <span className="text-white font-medium">Filter by Date:</span>
+    <DatePicker
+      selected={selectedDate}
+      onChange={(date) => setSelectedDate(date)}
+      dateFormat="yyyy-MM-dd"
+      placeholderText="Select a date"
+      className="bg-gray-800 text-white border border-gray-700 rounded px-3 py-2"
+    />
+    {selectedDate && (
+      <button
+        onClick={() => setSelectedDate(null)}
+        className="text-sm text-red-400 hover:underline"
+      >
+        Clear
+      </button>
+    )}
+  </div>
+</div>
+
+
         {/* Loading / Empty / List */}
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
@@ -238,7 +277,7 @@ const Journals = () => {
         ) : (
           <ul className="space-y-4">
             <AnimatePresence>
-              {journals.map((journal) => (
+              {filteredJournals.map((journal) => (
                 <motion.li
                   key={journal._id || Math.random().toString(36).substring(2, 9)}
                   initial={{ opacity: 0, y: 20 }}
