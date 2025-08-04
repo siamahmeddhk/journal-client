@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router";
 import { useAuthContext } from "../context/AuthContext";
 import { FiArrowLeft } from "react-icons/fi";
@@ -6,98 +6,117 @@ import { FiArrowLeft } from "react-icons/fi";
 const Dash = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuthContext();
+  const [journalCount, setJournalCount] = useState(0);
+
+  useEffect(() => {
+    if (user?.email) {
+      fetch(`https://my-journal-s.vercel.app/journals?email=${user.email}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setJournalCount(data.length || 0);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch journals:", err);
+        });
+    }
+  }, [user]);
 
   const activeClass =
-    "flex items-center px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg transform scale-105 transition-all duration-300";
-
+    "flex items-center px-4 py-3 rounded-xl bg-indigo-600 text-white shadow transition-transform transform hover:scale-105";
   const inactiveClass =
-    "flex items-center px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:text-indigo-600 transition-all duration-300 hover:transform hover:scale-105 text-gray-600";
+    "flex items-center px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all";
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-slate-50 to-gray-100">
+    <div className="flex h-screen bg-gradient-to-br from-slate-100 to-white">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-72 overflow-y-auto bg-white/80 backdrop-blur-xl border-r border-white/20 shadow-2xl transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-all duration-500 ease-out md:translate-x-0 md:static md:inset-auto`}
-      >
-        <div className="flex flex-col h-full">
-          <div className="relative p-8 border-b border-gray-100/50">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-t-3xl"></div>
-            <div className="relative flex flex-col items-center space-y-2">
-              <img
-                src={user?.photoURL || "https://i.pravatar.cc/100"}
-                alt="User Avatar"
-                className="w-16 h-16 rounded-full object-cover shadow-lg ring-4 ring-white/50"
-              />
-              <h2 className="text-lg font-semibold text-gray-800">
-                {user?.displayName || "Guest User"}
-              </h2>
-              <p className="text-sm text-gray-500">{user?.email || "Not logged in"}</p>
-            </div>
-          </div>
-
-          <nav className="flex-1 px-6 py-6 overflow-y-auto">
-            <NavLink to="/" className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:underline">
-              <FiArrowLeft size={16} /> Back to Home
-            </NavLink>
-
-            <ul className="space-y-3">
-              <li>
-                <NavLink
-                  to="/dashboard/journals"
-                  className={({ isActive }) =>
-                    isActive ? activeClass : inactiveClass
-                  }
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-indigo-500 text-white mr-4">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M12 6.253v13M12 6.253C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253M12 6.253C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                  </div>
-                  <span className="font-semibold">My Journals</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/dashboard/other"
-                  className={({ isActive }) =>
-                    isActive ? activeClass : inactiveClass
-                  }
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-teal-500 text-white mr-4">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                    </svg>
-                  </div>
-                  <span className="font-semibold">Other Option</span>
-                </NavLink>
-              </li>
-            </ul>
-
-            <div className="mt-10 p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
-              <h4 className="font-semibold text-gray-800 mb-2">Quick Actions</h4>
-              <p className="text-sm text-gray-600 mb-3">
-                Get started with your dashboard features.
-              </p>
-              <button className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                Explore Features
-              </button>
-            </div>
-          </nav>
+  className={`fixed inset-y-0 left-0 z-30 w-72 overflow-y-auto bg-white/90 backdrop-blur-lg border-r border-gray-200 shadow-xl transform ${
+    sidebarOpen ? "translate-x-0" : "-translate-x-full"
+  } transition-transform duration-300 md:translate-x-0 md:static`}
+>
+  <div className="flex flex-col h-full">
+    {/* Logo and Close */}
+    <div className="px-6 py-4 border-b border-gray-100">
+      <div className="flex items-center gap-2 mx-auto">
+        <div className="bg-indigo-600 p-2 rounded-lg">
+          <svg
+            className="w-6 h-6 text-white mx-auto"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            />
+          </svg>
         </div>
-      </aside>
+      </div>
+    </div>
 
-      {/* Content Area */}
+   
+
+    {/* Navigation */}
+    <nav className="flex-1 px-6 py-4 overflow-y-auto">
+      <NavLink
+        to="/"
+        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:underline"
+      >
+        <FiArrowLeft size={16} /> Back to Home
+      </NavLink>
+
+      <ul className="space-y-2">
+        <li>
+          <NavLink
+            to="/dashboard/journals"
+            className={({ isActive }) =>
+              isActive ? activeClass : inactiveClass
+            }
+            onClick={() => setSidebarOpen(false)}
+          >
+            <div className="w-10 h-10 mr-4 bg-indigo-500 text-white rounded-lg flex items-center justify-center">
+              📘
+            </div>
+            <span className="font-medium">My Journals</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/dashboard/other"
+            className={({ isActive }) =>
+              isActive ? activeClass : inactiveClass
+            }
+            onClick={() => setSidebarOpen(false)}
+          >
+            <div className="w-10 h-10 mr-4 bg-teal-500 text-white rounded-lg flex items-center justify-center">
+              ⚙️
+            </div>
+            <span className="font-medium">Other Option</span>
+          </NavLink>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</aside>
+
+
+      {/* Main Content Area */}
       <div className="flex flex-col flex-1 w-full">
-        <header className="flex items-center justify-between p-6 bg-white shadow md:hidden">
+        {/* Top Bar (mobile only) */}
+        <header className="flex items-center justify-between px-6 py-4 bg-white shadow-md md:hidden">
           <button
-            className="p-2 text-gray-600 hover:text-indigo-600 focus:outline-none"
+            className="text-gray-700 focus:outline-none"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
               {sidebarOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               ) : (
@@ -109,17 +128,62 @@ const Dash = () => {
           <div></div>
         </header>
 
-        <main className="flex-1 p-8 overflow-auto">
-          <div className="max-w-7xl mx-auto">
-            <p className="text-lg font-semibold text-gray-700 mb-6">
-              {user ? `Welcome back, ${user.displayName || user.email}!` : "Welcome, Guest!"}
-            </p>
-            <Outlet />
+        {/* Welcome Cluster */}
+    <main className="flex-1 px-4 sm:px-6 py-6 overflow-auto">
+  <div className="max-w-4xl mx-auto space-y-8">
+    {user && (
+      <div className="relative p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-white to-gray-50 border border-gray-200 shadow-md">
+        {/* Background blur effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 to-indigo-50/40 rounded-2xl z-0"></div>
+
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          {/* Profile Section */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+            <div className="relative">
+              <img
+                src={user.photoURL || "https://i.pravatar.cc/100"}
+                alt="Profile"
+                className="w-20 h-20 rounded-2xl object-cover shadow-lg ring-1 ring-gray-200"
+              />
+              <div className="absolute -bottom-2 -right-2 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
+            </div>
+
+            <div className="text-center sm:text-left">
+              <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                Welcome back, {user.displayName || "User"}!
+              </h2>
+              <p className="text-sm text-gray-600 mb-2">{user.email}</p>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                {journalCount || 0} journal{(journalCount || 0) !== 1 && "s"} created
+              </div>
+            </div>
           </div>
-        </main>
+
+          {/* Date Section */}
+          <div className="text-center sm:text-right">
+            <p className="text-sm text-gray-500">Today</p>
+            <p className="text-lg font-semibold text-gray-900">
+              {new Date().toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Outlet Content */}
+    <div className="relative z-10">
+      <Outlet />
+    </div>
+  </div>
+</main>
+
       </div>
 
-      {/* Overlay */}
+      {/* Mobile Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/30 backdrop-blur-sm z-20 md:hidden"
